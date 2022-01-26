@@ -5,14 +5,14 @@ import (
 )
 
 type User struct {
-	Id           int       `json:"ID" gorm:"primary_key"`
-	Name         string    `json:"name,omitempty"`
-	Passwd       string    `json:"passwd,omitempty"`
-	Prompt       string    `json:"Prompt,omitempty"`
-	Answer       string    `json:"answer,omitempty"`
-	Truename     string    `json:"truename,omitempty"`
-	Idnumber     string    `json:"idnumber,omitempty"`
-	Email        string    `json:"email,omitempty"`
+	ID           int       `json:"ID" gorm:"primary_key"`
+	Name         string    `json:"name,omitempty;" validate:"required,min=3,max=32"`
+	Passwd       string    `json:"passwd,omitempty;",validate:"required,min=6,max=32"`
+	Prompt       string    `json:"Prompt,omitempty;"validate:"max=32"`
+	Answer       string    `json:"answer,omitempty;"validate:"max=32"`
+	Truename     string    `json:"truename,omitempty;"validate:"max=32"`
+	Idnumber     string    `json:"idnumber,omitempty;"validate:"max=32"`
+	Email        string    `json:"email,omitempty;"validate:"required,max=64"`
 	Mobilenumber string    `json:"mobilenumber,omitempty"`
 	Province     string    `json:"province,omitempty"`
 	City         string    `json:"city,omitempty"`

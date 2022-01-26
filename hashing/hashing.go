@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/base64"
 	"encoding/hex"
+	"io"
 )
 
 func HashPassword(username string, password string, method string) (string, error) {
@@ -18,10 +19,11 @@ func HashPassword(username string, password string, method string) (string, erro
 
 func hashPasswordMD5(username string, password string) (string, error) {
 	hash := md5.Sum([]byte(username + password))
-	return hex.EncodeToString(hash[:]), nil
+	return "0x" + hex.EncodeToString(hash[:]), nil
 }
 
 func hashPasswordBase64MD5(username string, password string) (string, error) {
-	hash := md5.Sum([]byte(username + password))
-	return base64.StdEncoding.EncodeToString(hash[:]), nil
+	hash := md5.New()
+	io.WriteString(hash, username+password)
+	return base64.StdEncoding.EncodeToString(hash.Sum(nil)), nil
 }

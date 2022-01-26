@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/webmasterdro/gopwer/config"
 	"github.com/webmasterdro/gopwer/database"
 	"github.com/webmasterdro/gopwer/hashing"
 	"github.com/webmasterdro/gopwer/models"
@@ -17,14 +18,6 @@ func Login(c *fiber.Ctx) error {
 
 func Register(c *fiber.Ctx) error {
 
-	hash, err := hashing.HashPassword("teste", "teste", "md5")
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	db := database.DB
-
 	user := new(models.User)
 
 	if err := c.BodyParser(user); err != nil {
@@ -34,12 +27,25 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
-	user.Passwd = "0x" + hash
+	errors := models.ValidateStruct(*user)
+	if errors != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(errors)
+
+	}
+
+	hash, _ := hashing.HashPassword(user.Name, user.Passwd, config.Config("PASSWORD_HASH"))
+
+	user.Passwd = hash
 	user.Birthday = time.Now()
 	user.Creatime = time.Now()
 
 	// Save user to database
+	db := database.DB
 	db.Create(&user)
 
-	return nil
+	return c.JSON(fiber.Map{
+		"status":  fiber.StatusOK,
+		"message": "User created",
+		"user":    user,
+	})
 }
