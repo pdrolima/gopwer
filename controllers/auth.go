@@ -4,8 +4,10 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt"
 	"github.com/webmasterdro/gopwer/config"
+	"github.com/webmasterdro/gopwer/entity"
 	"github.com/webmasterdro/gopwer/hashing"
 	"github.com/webmasterdro/gopwer/models"
+	"github.com/webmasterdro/gopwer/validators"
 	"time"
 )
 
@@ -31,7 +33,7 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
-	errors := models.ValidateStruct(input)
+	errors := validators.ValidateStruct(input)
 	if errors != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(errors)
 
@@ -84,7 +86,7 @@ func Login(c *fiber.Ctx) error {
 
 func Register(c *fiber.Ctx) error {
 
-	user := new(models.User)
+	user := new(entity.User)
 
 	if err := c.BodyParser(user); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -93,7 +95,7 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
-	errors := models.ValidateStruct(*user)
+	errors := validators.ValidateStruct(*user)
 	if errors != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(errors)
 

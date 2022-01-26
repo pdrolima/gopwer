@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	"github.com/webmasterdro/gopwer/config"
+	"github.com/webmasterdro/gopwer/entity"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -15,11 +16,14 @@ func Connect() {
 		config.Config("DB_PASSWORD"),
 		config.Config("DB_HOST"),
 		config.Config("DB_NAME"))
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	connection, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		panic(err)
 	}
 
-	DB = db
+	DB = connection
+
+	connection.AutoMigrate(&entity.Order{})
+
 }
