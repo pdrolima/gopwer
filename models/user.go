@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/webmasterdro/gopwer/database"
 	"time"
 )
 
@@ -24,4 +25,14 @@ type User struct {
 	Creatime     time.Time `json:"creatime,omitempty"`
 	Qq           string    `json:"qq,omitempty"`
 	Passwd2      string    `json:"passwd2,omitempty"`
+}
+
+func GetUserByUserName(username string) (*User, error) {
+	user := User{}
+
+	err := database.DB.Where("name = ?", username).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }

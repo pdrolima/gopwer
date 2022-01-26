@@ -8,10 +8,10 @@ type ErrorResponse struct {
 	Value       string
 }
 
-func ValidateStruct(user User) []*ErrorResponse {
+func ValidateStruct(structToValidate interface{}) []*ErrorResponse {
 	var errors []*ErrorResponse
 	validate := validator.New()
-	err := validate.Struct(user)
+	err := validate.Struct(structToValidate)
 	if err != nil {
 		for _, err := range err.(validator.ValidationErrors) {
 			var element ErrorResponse
