@@ -5,6 +5,9 @@ import (
 	"time"
 )
 
+type AddCash struct {
+}
+
 type User struct {
 	ID           int       `json:"ID" gorm:"primary_key"`
 	Name         string    `json:"name,omitempty;" validate:"required,min=3,max=32"`
@@ -35,4 +38,12 @@ func GetUserByUserName(username string) (*User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func AddUserCash(userid int, cash int) error {
+	err := database.DB.Exec("call usecash(?, ?, ? ,?, ?, ?, ?, @error)", userid, 1, 0, 1, 0, cash*100, 1).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
