@@ -4,7 +4,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt"
 	"github.com/webmasterdro/gopwer/config"
-	"github.com/webmasterdro/gopwer/database"
 	"github.com/webmasterdro/gopwer/hashing"
 	"github.com/webmasterdro/gopwer/models"
 	"time"
@@ -106,9 +105,14 @@ func Register(c *fiber.Ctx) error {
 	user.Birthday = time.Now()
 	user.Creatime = time.Now()
 
-	// Save user to database
-	db := database.DB
-	db.Create(&user)
+	err := models.CreateUser(user)
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  fiber.StatusBadRequest,
+			"message": "Internal server error",
+		})
+	}
 
 	return c.JSON(fiber.Map{
 		"status":  fiber.StatusOK,

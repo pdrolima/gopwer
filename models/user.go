@@ -23,7 +23,7 @@ type User struct {
 	Phonenumber  string    `json:"phonenumber,omitempty"`
 	Address      string    `json:"address,omitempty"`
 	Postalcode   string    `json:"postalcode,omitempty"`
-	Gender       int       `json:"gender,omitempty"`
+	Gender       int       `json:"gender,omitempty;" validate:"min=0,max=1"`
 	Birthday     time.Time `json:"birthday,omitempty"`
 	Creatime     time.Time `json:"creatime,omitempty"`
 	Qq           string    `json:"qq,omitempty"`
@@ -38,6 +38,14 @@ func GetUserByUserName(username string) (*User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func CreateUser(user *User) error {
+	err := database.DB.Create(user).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func AddUserCash(userid int, cash int) error {
